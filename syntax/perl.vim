@@ -360,6 +360,16 @@ syn match perlSubName +\%(\h\|::\|'\w\)\%(\w\|::\|'\w\)*\_s*\|+ contained nextgr
 
 syn match perlFunction +\<sub\>\_s*+ nextgroup=perlSubName
 
+" Method::Signatures functions
+"       func [name] [(prototype)] {
+"       method [name] [(prototype)] {
+"
+
+syn match perlMSFuncPrototypeError "([^)]*)" contained contains=perlVarPlain,perlVarPlain2
+syn match perlMSFuncPrototype +(\_[^)]*)\_s*\|+ nextgroup=perlSubAttributes,perlComment contained contains=perlMSFuncPrototypeError
+syn match perlMSFuncName +\%(\h\|::\|'\w\)\%(\w\|::\|'\w\)*\_s*\|+ contained nextgroup=perlMSFuncPrototype,perlComment
+syn match perlFunction +\<func\|method\>\_s*+ nextgroup=perlMSFuncName
+
 if !exists("perl_no_scope_in_variables")
    syn match  perlFunctionPRef	"\h\w*::" contained
    syn match  perlFunctionName	"\h\w*[^:]" contained
@@ -402,10 +412,10 @@ if exists("perl_fold")
   endif
   if !exists("perl_nofold_subs")
     if exists("perl_fold_anonymous_subs") && perl_fold_anonymous_subs
-      syn region perlSubFold     start="^\z(\s*\).*\<sub\>.*[^};]$" end="^\z1}" transparent fold keepend
+      syn region perlSubFold     start="^\z(\s*\).*\<sub\|method\|func\>.*[^};]$" end="^\z1}" transparent fold keepend
       syn region perlSubFold start="^\z(\s*\)\<\(BEGIN\|END\|CHECK\|INIT\)\>.*[^};]$" end="^\z1}" transparent fold keepend
     else
-      syn region perlSubFold     start="^\z(\s*\)\<sub\>.*[^};]$" end="^\z1}\s*\%(#.*\)\=$" transparent fold keepend
+      syn region perlSubFold     start="^\z(\s*\)\<sub\|method\|func\>.*[^};]$" end="^\z1}\s*\%(#.*\)\=$" transparent fold keepend
       syn region perlSubFold start="^\z(\s*\)\<\%(BEGIN\|END\|CHECK\|INIT\|UNITCHECK\)\>.*[^};]$" end="^\z1}\s*$" transparent fold keepend
     endif
   endif
