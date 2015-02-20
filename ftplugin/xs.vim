@@ -1,9 +1,9 @@
 " Vim filetype plugin file
 " Language:      XS (Perl extension interface language)
-" Maintainer:    Andy Lester <andy@petdance.com>
+" Maintainer:    vim-perl <vim-perl@googlegroups.com>
 " Homepage:      http://github.com/vim-perl/vim-perl
 " Bugs/requests: http://github.com/vim-perl/vim-perl/issues
-" Last Change:   2009-08-14
+" Last Change:   {{LAST_CHANGE}}
 
 " Only do this when not done yet for this buffer
 if exists("b:did_ftplugin")

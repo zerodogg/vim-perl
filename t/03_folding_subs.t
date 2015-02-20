@@ -1,16 +1,19 @@
 use strict;
 use warnings;
-use lib 't';
+use lib 'tools';
 
-use Test::More tests => 1;
-use VimFolds;
+use Test::More tests => 4;
+use Local::VimFolds;
 
-my $folds = VimFolds->new(
-    language      => 'perl',
-    script_before => 'let perl_fold=1 | let perl_nofold_packages=1'
+my $folds = Local::VimFolds->new(
+    language => 'perl',
+    options  => {
+        perl_fold            => 1,
+        perl_nofold_packages => 1,
+    },
 );
 
-$folds->folds_match(<<'END_PERL');
+$folds->folds_match(<<'END_PERL', 'test folds on a regular sub');
 use strict;
 use warnings;
 
@@ -20,3 +23,55 @@ sub foo { # {{{
     print "hello!\n";
 } # }}}
 END_PERL
+
+TODO: {
+    local $TODO = q{Next-line subs don't fold properly yet'};
+
+    $folds->folds_match(<<'END_PERL', 'test folds on a sub with the opening brace on the next line');
+use strict;
+use warnings;
+
+sub foo
+{ # {{{
+    my ( $self, @params ) = @_;
+
+    print "hello!\n";
+} # }}}
+END_PERL
+}
+
+$folds->folds_match(<<'END_PERL', 'test folds for a sub prototype');
+use strict;
+use warnings;
+
+sub foo;
+
+sub foo { # {{{
+    my ( $self, @params ) = @_;
+
+    print "hello!\n";
+} # }}}
+END_PERL
+
+$folds = Local::VimFolds->new(
+    language => 'perl',
+    options  => {
+        perl_fold                  => 1,
+        perl_nofold_packages       => 1,
+        perl_no_subprototype_error => 1,
+    },
+);
+
+TODO: {
+    local $TODO = q{Prototypes and folding don't really mix};
+
+    $folds->folds_match(<<'END_PERL', 'test folds for subs with signatures');
+sub add($x, $y) { # {{{
+    return $x + $y;
+} # }}}
+
+sub subtract($x, $y) { # {{{
+    return $x - $y;
+} # }}}
+END_PERL
+}

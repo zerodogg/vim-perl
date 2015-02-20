@@ -1,9 +1,9 @@
 " Vim filetype plugin file
 " Language:      Perl 6
-" Maintainer:    Andy Lester <andy@petdance.com>
+" Maintainer:    vim-perl <vim-perl@googlegroups.com>
 " Homepage:      http://github.com/vim-perl/vim-perl
 " Bugs/requests: http://github.com/vim-perl/vim-perl/issues
-" Last Change:   2010-08-10
+" Last Change:   {{LAST_CHANGE}}
 " Contributors:  Hinrik Örn Sigurðsson <hinrik.sig@gmail.com>
 "
 " Based on ftplugin/perl.vim by Dan Sharp <dwsharp at hotmail dot com>
@@ -16,7 +16,8 @@ let b:did_ftplugin = 1
 let s:save_cpo = &cpo
 set cpo-=C
 
-setlocal formatoptions+=crq
+setlocal formatoptions-=t
+setlocal formatoptions+=crqol
 setlocal keywordprg=p6doc
 
 setlocal comments=:#
@@ -42,7 +43,7 @@ setlocal define=[^A-Za-z_]
 " after/ftplugin/perl6.vim file that contains
 "       set isfname-=:
 set isfname+=:
-setlocal iskeyword=48-57,_,A-Z,a-z,:,-
+setlocal iskeyword=@,48-57,_,192-255,:,-,'
 
 " Set this once, globally.
 if !exists("perlpath")
@@ -64,12 +65,24 @@ if !exists("perlpath")
     endif
 endif
 
-let &l:path=perlpath
+" Append perlpath to the existing path value, if it is set.  Since we don't
+" use += to do it because of the commas in perlpath, we have to handle the
+" global / local settings, too.
+if &l:path == ""
+    if &g:path == ""
+        let &l:path=perlpath
+    else
+        let &l:path=&g:path.",".perlpath
+    endif
+else
+    let &l:path=&l:path.",".perlpath
+endif
 "---------------------------------------------
 
 " Undo the stuff we changed.
-let b:undo_ftplugin = "setlocal fo< com< cms< inc< inex< def< isk<" .
+let b:undo_ftplugin = "setlocal fo< com< cms< inc< inex< def< isf< isk< kp< path<" .
         \         " | unlet! b:browsefilter"
 
 " Restore the saved compatibility options.
 let &cpo = s:save_cpo
+unlet s:save_cpo
