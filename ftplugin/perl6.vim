@@ -20,7 +20,7 @@ setlocal formatoptions-=t
 setlocal formatoptions+=crqol
 setlocal keywordprg=p6doc
 
-setlocal comments=:#
+setlocal comments=:#\|,:#=,:#
 setlocal commentstring=#%s
 
 " Change the browse dialog on Win32 to show mainly Perl-related files
@@ -43,7 +43,7 @@ setlocal define=[^A-Za-z_]
 " after/ftplugin/perl6.vim file that contains
 "       set isfname-=:
 set isfname+=:
-setlocal iskeyword=@,48-57,_,192-255,:,-,'
+setlocal iskeyword=@,48-57,_,192-255,-
 
 " Set this once, globally.
 if !exists("perlpath")

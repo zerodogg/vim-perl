@@ -32,3 +32,24 @@ SDFSDF
 sdfsdfsdf
 sdfsdf
 GOO
+
+my $str = q:foo:heredoc:bar/bla/
+dfgdfgdfg
+dfg
+bla
+
+my $str = q:heredoc/bla/
+dfgdfgdfg
+dfg
+bla
+
+say qq :to 'TEXT';
+    Wow, this is $description!
+    TEXT
+
+say qq
+:to 'TEXT';
+    Wow, this is $description!
+    TEXT
+
+# vim: ft=perl6
